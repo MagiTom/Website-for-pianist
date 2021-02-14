@@ -98,3 +98,54 @@ console.log(film)
             }
     })
 })
+
+// Paralax image
+
+function parallax(element, speed) {
+    const item = document.querySelector(element);
+    let contentPosition = item.getBoundingClientRect().top/8;
+    
+item.style.backgroundSize = 110 +window.pageYOffset/70 + '%';
+
+        item.style.transform = `translateY(${contentPosition * speed}px)`;
+
+        item.style.transition = `background-size 2s ease-in-out, transform 1s ease-in-out`
+}
+
+function parallaxBg(element){
+    const item = document.querySelector(element);
+    item.style.backgroundSize = 90 +window.pageYOffset/60 + '%';
+    item.style.transition = `background-size 2s ease-in-out`;
+
+}
+
+function parallaxText(element){
+    const item = document.querySelector(element);
+
+let itemPosition = item.getBoundingClientRect().top;
+let screenPosition = window.innerHeight;
+if (itemPosition < screenPosition) {
+    item.classList.add('showText');
+} else {
+    item.classList.remove('showText');
+}
+}
+
+window.addEventListener('scroll', function () {
+    parallax('.nav .name', 0.2);
+    parallax('.nav .surname', 0.5);
+    parallax('.nav .quote', 0.2);
+    parallax('.aboutMe__image', 0.2);
+    parallax('.aboutMe2__image', 0.2);
+    parallax('.aboutMe3__image', 0.2);
+    parallax('.aboutMe4__image', 0.2);
+    parallax('.quote__image2', 0.2);
+    parallax('.quote__image2_back', 0.2);
+   parallaxBg('.aboutMe5__image');
+   parallaxText('.aboutMe__content p')
+   parallaxText('.aboutMe2__content p')
+   parallaxText('.aboutMe3__content p')
+   parallaxText('.aboutMe4__content p')
+   parallaxText('.aboutMe5__content p')
+   parallaxText('.quote__quote p')
+});
