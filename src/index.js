@@ -3,7 +3,7 @@ import style from "./css/index.scss"
 // indicator 
 const progress = document.querySelector('#progress');
 const navItem = [...document.querySelectorAll('.pages a')];
-const page = document.querySelector('.page');
+const body = document.querySelector('body');
 const reveal = document.querySelector('.reveal');
 const menuHamburger = document.querySelector('.menu__hamburger');
 const menuText = document.querySelector('.menu__text');
@@ -62,43 +62,6 @@ window.onload = function() {
     reveal.classList.add('roll');
   };
 
-// video play 
-
-const videobuttonStart = document.querySelectorAll('.videoButton');
-const video = document.querySelectorAll('.play');
-let loop = 0;
-
-videobuttonStart.forEach((btn)=>{
-    btn.addEventListener('click', function(){
-        
-        const film = btn.previousElementSibling;
-console.log(film)
-
-        film.load();
-        film.muted = false;
-       btn.style.visibility = 'hidden';
-        film.setAttribute("controls", "controls");
-    
-       film.addEventListener('ended', ()=>{
-        film.play();
-        loop++;
-        if(loop > 0){
-            film.muted = true;
-            btn.style.visibility = 'visible';
-        }
-    })
-    })
-    })
-
-    video.forEach((film) =>{
-        film.addEventListener('ended', ()=>{
-            film.play();
-            if(film.hasAttribute("controls", "controls")){
-                film.removeAttribute("controls", "controls")
-            }
-    })
-})
-
 // Paralax image
 
 function parallax(element, speed) {
@@ -123,15 +86,28 @@ function parallaxText(element){
     const item = document.querySelector(element);
 
 let itemPosition = item.getBoundingClientRect().top;
-let screenPosition = window.innerHeight;
+let screenPosition = window.innerHeight/1.2;
+
 if (itemPosition < screenPosition) {
+    item.classList.remove('hidden');
     item.classList.add('showText');
 } else {
     item.classList.remove('showText');
+    item.classList.add('hidden');
 }
 }
 
 window.addEventListener('scroll', function () {
+
+    if(body.classList.contains('aboutMePage')){
+        effectsForAboutMe();
+    } else if (body.classList.contains('videosPage')){
+        effectsForVideoPage();
+    }
+  
+});
+
+function effectsForAboutMe(){
     parallax('.nav .name', 0.2);
     parallax('.nav .surname', 0.5);
     parallax('.nav .quote', 0.2);
@@ -142,10 +118,178 @@ window.addEventListener('scroll', function () {
     parallax('.quote__image2', 0.2);
     parallax('.quote__image2_back', 0.2);
    parallaxBg('.aboutMe5__image');
-   parallaxText('.aboutMe__content p')
-   parallaxText('.aboutMe2__content p')
-   parallaxText('.aboutMe3__content p')
-   parallaxText('.aboutMe4__content p')
-   parallaxText('.aboutMe5__content p')
-   parallaxText('.quote__quote p')
-});
+   parallaxText('.aboutMe__content p');
+   parallaxText('.aboutMe2__content p');
+   parallaxText('.aboutMe3__content p');
+   parallaxText('.aboutMe4__content p');
+   parallaxText('.aboutMe5__content p');
+   parallaxText('.quote__quote p');
+}
+
+function effectsForVideoPage(){
+    parallax('.nav .name2', 0.2);
+    parallax('.video1__container .video_wrapper', 0.2);
+    parallax('.video2 .video_wrapper', 0.2);
+    parallaxText('.video1__content p');
+    parallaxText('.video2__content p');
+}
+
+
+// video play 
+
+const videobuttonStart = document.querySelectorAll('.videoButton');
+const video = document.querySelectorAll('.play');
+let loop = 0;
+
+videobuttonStart.forEach((btn)=>{
+    btn.addEventListener('click', function(){
+        const film = btn.previousElementSibling;
+       startPlay(film);
+       btn.style.visibility = 'hidden';
+    
+       film.addEventListener('ended', ()=>{
+         endPlay(film);
+            btn.style.visibility = 'visible';
+    })   
+    })
+    })
+
+function startPlay(film){
+    film.load();
+    film.muted = false; 
+    film.setAttribute("controls", "controls");
+}
+
+function endPlay(film){
+    film.play();
+        loop++;
+        if(loop > 0){
+            film.muted = true;
+        }
+}
+
+    video.forEach((film) =>{
+        film.addEventListener('ended', ()=>{
+            film.play();
+            if(film.hasAttribute("controls", "controls")){
+                film.removeAttribute("controls", "controls")
+            }
+    })
+})
+
+// video carousel
+
+const section3 = document.querySelector('.video3');
+const section4 = document.querySelector('.video4');
+const containerMovie = document.querySelector('.container_movie');
+const containerMovie2 = document.querySelector('.container_movie2');
+const section3btns = document.querySelectorAll('.videoButton2');
+console.log(section3btns)
+
+let initialPosition = null;
+let endPosition = null;
+let moving = false;
+let transform = 0;
+let lastPageX = 0;
+let transformValue = 0;
+let mousedown = 0;
+let clicked = false;
+
+const gestureStart = (e) =>{
+    e.preventDefault();
+    mousedown = 1;
+    console.log(mousedown)
+    containerMovie.style.pointerEvents = 'none';
+    initialPosition = e.pageX;
+    moving = true;
+    const transformMatrix = window.getComputedStyle(containerMovie).getPropertyValue('transform');
+    if(transformMatrix !== 'none'){
+        transform = parseInt(transformMatrix.split(',')[4].trim());
+    }
+}
+
+const gestureMove = (e) =>{
+    if(moving){
+        mousedown++;
+    console.log(mousedown)
+        const currentPosition = e.pageX;
+        const diff = currentPosition - initialPosition;
+        const section3_rect = section3.getBoundingClientRect();
+        const containerMovie_rect = containerMovie.getBoundingClientRect();
+        
+if(e.pageX - lastPageX > 0){
+    if(transformValue > 0){
+        return;
+    }
+}else{
+    if(containerMovie_rect.right < section3_rect.right){
+        return
+    }
+}
+transformValue = parseInt(transform) + diff;
+containerMovie.style.transform = `translateX(${transformValue}px)`;
+    }
+
+    lastPageX = e.pageX;
+}
+
+const gestureEnd = (e)=>{
+    moving = false;
+    containerMovie.style.pointerEvents = 'all';
+    endPosition = e.pageX;
+}
+
+//detect how long is press
+
+let pressTimer = 0;
+let longpress = false;
+
+section3btns.forEach((btn)=>{
+    btn.addEventListener('mousedown', (e)=>{
+        longpress = false; 
+        pressTimer = window.setTimeout(function(){
+        longpress = true; 
+        console.log('dlugi click')
+    gestureStart(e);
+        },200)
+    })
+})
+
+section3btns.forEach((btn)=>{
+    btn.addEventListener('mouseup', ()=>{
+        clearTimeout(pressTimer);
+    })
+})
+
+section3btns.forEach((btn)=>{
+    btn.addEventListener('click', ()=>{
+        if(longpress) { // if detect hold, stop onclick function
+            return false;
+        }else{
+            console.log('sss')
+            const film = btn.previousElementSibling;
+            btn.style.visibility = 'hidden';
+            startPlay(film);
+            film.addEventListener('ended', ()=>{
+                endPlay(film);
+                   btn.style.visibility = 'visible';
+           })   
+        }
+    })
+})
+
+// Pointer Events
+if(window.PointerEvent){
+    // section3.addEventListener('pointerdown', gestureStart);
+    section3.addEventListener('pointermove', gestureMove);
+    section3.addEventListener('pointerup', gestureEnd);
+}else {
+    // section3.addEventListener('touchdown', gestureStart);
+    section3.addEventListener('touchmove', gestureMove);
+    section3.addEventListener('touchup', gestureEnd);
+    // section3.addEventListener('mousedown', gestureStart);
+    section3.addEventListener('mousemove', gestureMove);
+    section3.addEventListener('mouseup', gestureEnd);
+}
+
+// test ====================
