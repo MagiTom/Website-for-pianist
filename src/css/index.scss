@@ -1208,7 +1208,7 @@ video {
   }
 }
 
-.videoButton, .videoButton2 {
+.videoButton, .videoButton1 , .videoButton2 {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -1254,7 +1254,7 @@ video {
   }
 }
 
-.videoButton, .videoButton2 {
+.videoButton, .videoButton1, .videoButton2 {
   &:active {
     outline: none;
   }
@@ -1432,7 +1432,7 @@ video {
     }
   }
 
-  .videoButton2 {
+  .videoButton1, .videoButton2 {
     width: 100%;
     height: 100%;
   }
