@@ -343,3 +343,82 @@ if(window.PointerEvent){
     section4.addEventListener('mousemove', gestureMove);
     section4.addEventListener('mouseup', gestureEnd);
 }
+
+//carusel on arrows
+
+const videosInCarusel1 = document.querySelectorAll('.container_movie .video_wrapper');
+const videosInCarusel2 = document.querySelectorAll('.container_movie2 .video_wrapper');
+const arrowRight1 = document.querySelector('.video3 .fa-chevron-circle-right');
+const arrowLeft1 = document.querySelector('.video3 .fa-chevron-circle-left');
+const arrowRight2 = document.querySelector('.video4 .fa-chevron-circle-right');
+const arrowLeft2 = document.querySelector('.video4 .fa-chevron-circle-left');
+let counter1 = 0;
+let counter2 = 0;
+
+
+arrowRight1.addEventListener('click', ()=>{
+    counter1++;
+    nextSlide1();
+})
+
+arrowLeft1.addEventListener('click', ()=>{
+    counter1--;
+nextSlide1();
+})
+arrowRight2.addEventListener('click', ()=>{
+    counter2++;
+    nextSlide2();
+})
+
+arrowLeft2.addEventListener('click', ()=>{
+    counter2--;    
+nextSlide2();
+})
+
+function nextSlide1(){
+  const lastBtn_rect = section3btns[section3btns.length -1].getBoundingClientRect();
+  const firstBtn_rect = section3btns[0].getBoundingClientRect();
+
+    if(lastBtn_rect.right - firstBtn_rect.width < window.innerWidth){
+        arrowRight1.style.display = 'none';
+    }else{
+        arrowRight1.style.display = 'block';
+    }
+
+    if(firstBtn_rect.right - firstBtn_rect.width <= 0 + firstBtn_rect.width){
+        arrowLeft1.style.display = 'block';
+    }else{
+        arrowLeft1.style.display = 'none';
+    } 
+    
+
+    videosInCarusel1.forEach((video)=>{
+video.style.transform = `translateX(${counter1 * -video.offsetWidth}px)`;
+video.style.transition = 'all 0.5s ease-in-out';
+    })
+}
+function nextSlide2(){
+  const lastBtn_rect = section4btns[section4btns.length -1].getBoundingClientRect();
+  const firstBtn_rect = section4btns[0].getBoundingClientRect();
+
+    if(lastBtn_rect.right - firstBtn_rect.width < window.innerWidth){
+        arrowRight2.style.display = 'none';
+    }else{
+        arrowRight2.style.display = 'block';
+    }
+
+    if(firstBtn_rect.right - firstBtn_rect.width <= 0 + firstBtn_rect.width){
+        arrowLeft2.style.display = 'block';
+    }else{
+        arrowLeft2.style.display = 'none';
+    } 
+    
+
+    videosInCarusel2.forEach((video)=>{
+video.style.transform = `translateX(${counter2 * -video.offsetWidth}px)`;
+video.style.transition = 'all 0.5s ease-in-out';
+    })
+}
+
+arrowLeft1.style.display = 'none';
+arrowLeft2.style.display = 'none';
