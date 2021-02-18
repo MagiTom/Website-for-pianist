@@ -1561,6 +1561,7 @@ video {
   font-size: calc(1.5vw + 0.5rem);
   letter-spacing: $letterSpacingMobile;
   color: rgba(255, 255, 255, 0.7);
+  animation: appearText 1s ease 0.9s both;
   @media only screen and (min-width: 820px) {
     font-size: $fontSizeRegular;
     line-height: $lineHight;
